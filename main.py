@@ -2,6 +2,9 @@ import cv2
 import time
 import emailing
 import glob
+from threading import Thread
+
+from emailing import delete_images
 
 video = cv2.VideoCapture(0)
 time.sleep(1)
@@ -47,8 +50,13 @@ while True:
     status_list = status_list[-2:]
 
     if status_list[0] == 1 and status_list[1] == 0:
-        emailing.send_email(image_with_object)
-        emailing.delete_images()
+        email_thread = Thread(target=emailing.send_email, args=(image_with_object,))
+        email_thread.daemon = True
+        delete_thread = Thread(target=delete_images)
+        delete_thread.daemon = True
+
+        email_thread.start()
+        delete_thread.start()
 
     print(status_list)
 
