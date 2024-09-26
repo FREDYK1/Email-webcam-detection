@@ -1,3 +1,5 @@
+import os
+import glob
 import smtplib
 import imghdr
 from email.message import EmailMessage
@@ -5,7 +7,7 @@ from email.message import EmailMessage
 
 PASSWORD = "vtse cxha iaxe odwh"
 SENDER = "frederickkankam7@gmail.com"
-RECEIVER = "fkwekukankam@gmail.com"
+RECEIVER = "frederickkankam7@gmail.com"
 
 
 def send_email(image):
@@ -27,3 +29,8 @@ def send_email(image):
     gmail.send_message(SENDER, RECEIVER, email_message.as_string())
     gmail.quit()
 
+
+def delete_images():
+    images = glob.glob("images/*.png")
+    for image in images:
+        os.remove(image)

@@ -1,15 +1,16 @@
 import cv2
 import time
-from emailing import send_email
+import emailing
 import glob
 
 video = cv2.VideoCapture(0)
 time.sleep(1)
 
 first_frame = None
-
 status_list = []
 count = 1
+
+
 
 while True:
     status = 0
@@ -32,7 +33,8 @@ while True:
         if cv2.contourArea(contour) < 20000:
             continue
         x, y, w, h = cv2.boundingRect(contour)
-        rectangle = cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255,0), 3)
+        rectangle = cv2.rectangle(frame, (x, y), (x+w, y+h),
+                                  (0, 255,0), 3)
         if rectangle.any():
             status = 1
             cv2.imwrite(f"images/{count}.png", frame)
@@ -45,7 +47,9 @@ while True:
     status_list = status_list[-2:]
 
     if status_list[0] == 1 and status_list[1] == 0:
-        send_email(image_with_object)
+        emailing.send_email(image_with_object)
+        emailing.delete_images()
+
     print(status_list)
 
     cv2.imshow("Video", frame)
